@@ -1,33 +1,44 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-running = True
-
 GPIO.setwarnings(False)
 
-def Angle(Ang):
-    Cycle = (Ang / 27) + 2.5
-    print(f"Angle = {Ang}")
-    print(f"Duty = {Cycle}")
-    return Cycle
+def angle2DutyCycle(angle):
+    dutyCycle = (angle / 27) + 2.5
+    print(f"Angle = {angle}")
+    print(f"Duty Cycle = {dutyCycle}")
+    return dutyCycle
 
-servoPIN = 21
-alogPos = 19
+servo1PIN = 21
+servo2PIN = 16
+frequency = 50
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(servoPIN, GPIO.OUT)
-#GPIO.setup(alogPos, GPIO.IN) # Servo outputs analog signal for feedback, not even sure if thats useful for us
+GPIO.setup(servo1PIN, GPIO.OUT)
+GPIO.setup(servo2PIN, GPIO.OUT)
 
-pwm = GPIO.PWM(servoPIN, 50) # GPIO servoPIN for PWM with 50Hz
-print("Start")
-pwm.start(0) # Initialization
+pwm1 = GPIO.PWM(servo1PIN, frequency) # GPIO servoPIN for PWM with 50Hz
+pwm2 = GPIO.PWM(servo2PIN, frequency) # GPIO servoPIN for PWM with 50Hz
+# print("Start")
+pwm1.start(0) # Initialization servo 1
+pwm2.start(0) # Initialization servo 2
 
-while running:
-    deg = float(input("Angle: "))
-    if deg < 0 or deg > 270:
-        running = False
-        pwm.stop()
+while True:
+    desiredAngle = float(input("Angle: "))
+    servo = float(input("Servo: "))
+    if desiredAngle < 0 or desiredAngle > 270:
+        pwm1.stop()
+        pwm2.stop()
         GPIO.cleanup()
+        print("break")
         break
     else:
-        pwm.ChangeDutyCycle(Angle(deg))
-        #sleep(.5)
+        if servo == 1:
+            pwm1.ChangeDutyCycle(angle2DutyCycle(desiredAngle))
+        elif servo == 2:
+            pwm2.ChangeDutyCycle(angle2DutyCycle(desiredAngle))
+        else:
+            pwm1.stop()
+            pwm2.stop()
+            GPIO.cleanup()
+            print("break")
+            break

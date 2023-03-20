@@ -1,6 +1,12 @@
 import sys
 import os
+import servoTurn
 from datetime import datetime
+
+global servo1_angle
+global servo2_angle
+servo1_angle = 0
+servo2_angle = 0
 
 def main():
     num_args = len(sys.argv)
@@ -9,27 +15,33 @@ def main():
     logfile = open("logs/landinglog" + str(datetime.now()) + ".txt", "w")
     while(i < num_args):
         command = str(sys.argv[i]).upper()
+        ex_command(logfile, command)
+        #log(logfile, command)
         i = i + 1
     logfile.close()
 
 def init():
-    print(os.getcwd())
-    
+    print("")
+def log(logfile, text):
+    logfile.write(text + "\n")
 
-def log_cmd(command):
-    logfile.write("Executed " + command + "\n")
-
-def ex_command(command):
+def ex_command(logfile, command):
+    global servo2_angle
+    success = -1
     if(command == "A1"):
-        turn_servo(60, True)
-        log(command)
+        servo2_angle += 60
+        success = servoTurn.moveServo(2,servo2_angle)
     elif(command == "B2"):
-        turn_servo(60, False)
+        servo2_angle -= 60
+        success = servoTurn.moveServo(2, servo2_angle)
     elif(command == "C3"):
-        log(command)
+        print("got c3")
     else:
         print("")
-
+    if(success < 0):
+        log(logfile, "Returned error while executing " + command)
+    else:
+        log(logfile, str("successfully executed " + command))
 def turn_servo(degrees, right):
     print("AHHHHHHH")
 if __name__ == "__main__":

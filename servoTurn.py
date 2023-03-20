@@ -1,7 +1,19 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
+GPIO.setwarnings(False)   
+servo1PIN = 21
+servo2PIN = 16
+frequency = 50
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo1PIN, GPIO.OUT)
+GPIO.setup(servo2PIN, GPIO.OUT)
 
+pwm1 = GPIO.PWM(servo1PIN, frequency) # GPIO servoPIN for PWM with 50Hz
+pwm2 = GPIO.PWM(servo2PIN, frequency) # GPIO servoPIN for PWM with 50Hz
+# print("Start")
+pwm1.start(0) # Initialization servo 1
+pwm2.start(0) # Initialization servo 2
 
 def angle2DutyCycle(angle):
     dutyCycle = (angle / 27) + 2.5
@@ -10,20 +22,6 @@ def angle2DutyCycle(angle):
     return dutyCycle
 
 def moveServo(servo_num, degrees):
-    GPIO.setwarnings(False)
-    servo1PIN = 21
-    servo2PIN = 16
-    frequency = 50
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(servo1PIN, GPIO.OUT)
-    GPIO.setup(servo2PIN, GPIO.OUT)
-
-    pwm1 = GPIO.PWM(servo1PIN, frequency) # GPIO servoPIN for PWM with 50Hz
-    pwm2 = GPIO.PWM(servo2PIN, frequency) # GPIO servoPIN for PWM with 50Hz
-    # print("Start")
-    pwm1.start(0) # Initialization servo 1
-    pwm2.start(0) # Initialization servo 2
-
     if degrees < 0 or degrees > 270:
         pwm1.stop()
         pwm2.stop()
@@ -32,9 +30,11 @@ def moveServo(servo_num, degrees):
     else:
         if servo_num == 1:
             pwm1.ChangeDutyCycle(angle2DutyCycle(degrees))
+            sleep(2)
             return 0
         elif servo_num == 2:
             pwm2.ChangeDutyCycle(angle2DutyCycle(degrees))
+            sleep(2)
             return 0
         else:
             pwm1.stop()

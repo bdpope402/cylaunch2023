@@ -11,7 +11,7 @@ def Angle(Ang):
     print(f"Duty = {Cycle}")
     return Cycle
 
-servoPIN = 21
+servoPIN = 16
 alogPos = 19
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(servoPIN, GPIO.OUT)

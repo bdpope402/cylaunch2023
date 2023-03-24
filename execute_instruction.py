@@ -21,7 +21,8 @@ def main():
     logfile.close()
 
 def init():
-    print("")
+    success = servoTurn.moveServo(2,servo2_angle)
+    
 def log(logfile, text):
     logfile.write(text + "\n")
 

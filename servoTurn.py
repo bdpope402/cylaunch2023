@@ -9,6 +9,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(servo1PIN, GPIO.OUT)
 GPIO.setup(servo2PIN, GPIO.OUT)
 
+global pwm1
+global pwm2
 pwm1 = GPIO.PWM(servo1PIN, frequency) # GPIO servoPIN for PWM with 50Hz
 pwm2 = GPIO.PWM(servo2PIN, frequency) # GPIO servoPIN for PWM with 50Hz
 # print("Start")
@@ -22,17 +24,17 @@ def angle2DutyCycle(angle):
     return dutyCycle
 
 def moveServo(servo_num, degrees):
-    if degrees < 0 or degrees > 270:
+    if(degrees < 0 or degrees > 270):
         pwm1.stop()
         pwm2.stop()
         GPIO.cleanup()
         return -1
     else:
-        if servo_num == 1:
+        if(servo_num == 1):
             pwm1.ChangeDutyCycle(angle2DutyCycle(degrees))
             sleep(2)
             return 0
-        elif servo_num == 2:
+        elif(servo_num == 2):
             pwm2.ChangeDutyCycle(angle2DutyCycle(degrees))
             sleep(2)
             return 0

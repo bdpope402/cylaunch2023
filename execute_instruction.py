@@ -21,29 +21,45 @@ def main():
     logfile.close()
 
 def init():
-    success = servoTurn.moveServo(2,servo2_angle)
+    servoTurn.moveServo(2,servo2_angle)
     
 def log(logfile, text):
-    logfile.write(text + "\n")
+    logfile.write( text + "\n")
 
 def ex_command(logfile, command):
     global servo2_angle
     success = -1
     if(command == "A1"):
+        log(logfile, "Entering A1: Turning Camera 60")
         servo2_angle += 60
         success = servoTurn.moveServo(2,servo2_angle)
+        log(logfile, "Exiting A1")
     elif(command == "B2"):
+        log(logfile,"Entering B2: Turning camera -60")
         servo2_angle -= 60
         success = servoTurn.moveServo(2, servo2_angle)
+        log(logfile,"Exiting B2")
     elif(command == "C3"):
-        print("got c3")
+        log(logfile,"Enginering C3: Taking Picture")
+        log(logfile,"Exiting C3")
+    elif(command == "D4"):
+        log(logfile, "Entering D4: Changing to greyscale")
+        log(logfile, "Exiting D4")
+    elif(command == "E5"):
+        log(logfile, "Entering E5: Changing to color")
+        log(logfile, "Exiting E5")
+    elif(command == "F6"):
+        log(logfile, "Entering F6: Rotate images 180 deg")
+        log(logfile, "Exiting F6")
+    elif(command == "G7"):
+        log(logfile, "Entering G7: Clearing all filters")
+        log(logfile, "exiting G7")
     else:
         print("")
     if(success < 0):
         log(logfile, "Returned error while executing " + command)
     else:
         log(logfile, str("successfully executed " + command))
-def turn_servo(degrees, right):
-    print("AHHHHHHH")
+
 if __name__ == "__main__":
     main()

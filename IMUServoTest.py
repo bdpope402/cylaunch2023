@@ -19,16 +19,19 @@ def angle2DutyCycle(angle):
 def euler_from_quaternion(x, y, z, w):
     t0 = +2.0 * (w * x + y * z)
     t1 = +1.0 - 2.0 * (x * x + y * y)
-    roll = degrees(atan2(t0, t1))
+    roll = atan2(t0, t1)
+    rolld = degrees(roll)
 
     t2 = +2.0 * (w * y - z * x)
     t2 = +1.0 if t2 > +1.0 else t2
     t2 = -1.0 if t2 < -1.0 else t2
-    pitch = degrees(asin(t2))
+    pitch = asin(t2)
+    pitch = degrees(pitch)
 
     t3 = +2.0 * (w * z + x * y)
     t4 = +1.0 - 2.0 * (y * y + z * z)
-    yaw = degrees(atan2(t3, t4))
+    yaw = atan2(t3, t4)
+    yawd = aw = degrees(yaw)
 
     return roll, pitch, yaw  # in radians
 
@@ -100,12 +103,6 @@ while True:
     print(f"roll {roll}, pitch {pitch}, yaw {yaw}")
 
     """
-    roll, pitch, yaw = quat.to_euler_angles()
-    rollDeg, pitchDeg, yawDEg = (
-        math.degrees(roll),
-        math.degrees(pitch),
-        math.degrees(yaw),
-    )
 
     angle_to_horizon = 90 - pitch_degrees
 
@@ -134,7 +131,8 @@ while True:
             GPIO.cleanup()
             print("break")
             break
-        else:
+        else:  
+            '''
             if servo == 1:
                 pwm1.ChangeDutyCycle(angle2DutyCycle(desiredAngle))
             elif servo == 2:
@@ -145,5 +143,9 @@ while True:
                 GPIO.cleanup()
                 print("break")
                 break
+            '''
+
+            +
+
     lastDAng = desiredAngle
     sleep(1)

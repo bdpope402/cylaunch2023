@@ -11,6 +11,7 @@ def checkIfLaunching():
     accelerationX, accelerationY, accelerationZ = sensor.acceleration
     accelerationMag = sqrt(accelerationX**2 + accelerationY**2 + accelerationZ**2)
 
+    print("Acceleration Magnitude: " + str(accelerationMag))
     if(accelerationMag < 20):
         return False
     else:

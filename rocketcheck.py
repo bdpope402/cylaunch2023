@@ -17,4 +17,13 @@ def checkIfLaunching():
     else:
         return True
     
+def checkIfLanded():
+    accelerationX, accelerationY, accelerationZ = sensor.acceleration
+    accelerationMag = sqrt(accelerationX**2 + accelerationY**2 + accelerationZ**2)
+
+    print("Acceleration Magnitude: " + str(accelerationMag))
+    if(accelerationMag > 9.78 and accelerationMag < 9.81 ):
+        return True
+    else:
+        return False
 

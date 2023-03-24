@@ -15,7 +15,12 @@ def main():
         print("skipping launchpad sleep")
     while(rocketcheck.checkIfLaunching() == False):
         time.sleep(1)
-    print("Exited while loop")
+    print("Exited launch loop")
+    time.sleep(5)
+    print("Starting landed loop")
+    while(rocketcheck.checkIfLanded() == False):
+        time.sleep(1)
+    print("Exited landing loop")
 
 
 if __name__ == "__main__":

@@ -3,24 +3,25 @@ import execute_instruction
 import time
 import os
 from cyllogger import cyllogger 
+import hat_test
 
 WAIT_TIME = 1800 #30 minute sleep time
-SLEEP_FILE_PATH = "/home/cylaunch/payload_code/flags/dosleep.cyl"
-SM_FILE_PATH= "/home/cylaunch/payload_code/flags/doLaunchOnStartup.cyl"
+SKIP_SLEEP_PATH = "/home/cylaunch/payload_code/flags/skipSleep.cyl"
+SKIP_SM_PATH= "/home/cylaunch/payload_code/flags/SkipSM.cyl"
 
 log = cyllogger("sm_log")
 
 def main():
-    log.writeTo("In main")
-    if(os.path.exists(SLEEP_FILE_PATH) == False):
-        log.writeTo("Entering launchpad sleep")
+    log.writeTo("Entered main() of launch_sm")
+    if(os.path.exists(SKIP_SLEEP_PATH) == False):
+        log.writeTo("Entering launchpad sleep, sleeping for: " + str(WAIT_TIME/60) + " minutes.")
         time.sleep(WAIT_TIME)
     else:
-        log.writeTo("skipping launchpad sleep")
+        log.writeTo("skipSleep.cyl exists, immediately checking accelerometer data")
     while(rocketcheck.checkIfLaunching() == False):
         time.sleep(1)
     log.writeTo("Exited launch loop")
-    time.sleep(5)
+    time.sleep(180) #Sleep for 3 minutes to accomodate launch
     log.writeTo("Starting landed loop")
     while(rocketcheck.checkIfLanded() == False):
         time.sleep(1)
@@ -30,7 +31,7 @@ def main():
 
 
 if __name__ == "__main__":
-    if(os.path.exists(SLEEP_FILE_PATH) == True):
-        main()
+    if(os.path.exists(SKIP_SM_PATH) == True):
+        log.writeTo("skipSM.cyl found, not entering main()")
     else:
-        log.writeTo("doLaunchOnStartup.cyl not found, not entering loop")
+        main()

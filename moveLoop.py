@@ -3,7 +3,7 @@ import time
 
 def main():
     while(True == True):
-        userInput = input("What motor do you want? (S for stepepr L for lin act)")
+        userInput = input("What motor do you want? (S for stepper L for lin act)")
         userDir = input("F or B?")
         userSteps = int(input("How many steps:"))
         if(userInput == "S"):

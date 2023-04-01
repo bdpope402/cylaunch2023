@@ -2,3 +2,5 @@
 logs/*
 __pycache__/*
 flags/*
+photos
+radio_output

@@ -3,6 +3,7 @@ import os
 import servoTurn
 from cyllogger import cyllogger
 from datetime import datetime
+from photo_editor import photo_editor
 
 NASA_CALLSIGN = "PLACEHOLDER, CHANGE ME"
 
@@ -11,16 +12,17 @@ global servo2_angle
 servo1_angle = 0
 servo2_angle = 0
 
-global greyscale
-global rotate_180
-global custom_filter
 
-greyscale = False
-rotate_180 = False
-custom_filter = False
+
 
 
 def main():
+    global greyscale
+    global rotate_180
+    global custom_filter
+    greyscale = False
+    rotate_180 = False
+    custom_filter = False
     log = cyllogger("ex_instruction_log")
     num_args = len(sys.argv)
     if(verifyCallSign(sys.argv[0]) == False):
@@ -37,7 +39,6 @@ def main():
 
 def init():
     servoTurn.moveServo(servo2_angle)
-    greyscale = False
 
 def verifyCallSign(callsign):
     return (NASA_CALLSIGN ==  callsign)
@@ -46,6 +47,10 @@ def verifyCallSign(callsign):
 def ex_command(log, command):
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
+    editor = photo_editor("/home/cylaunch/payload_code/DO_NOT_DELETE/daniel.jpg")
+    global greyscale
+    global rotate_180
+    global custom_filter
     global servo2_angle
     success = -1
     if(command == "A1"):
@@ -62,16 +67,27 @@ def ex_command(log, command):
         log.writeTo("Entering C3: Taking Picture")
         photo_path = "/home/cylaunch/payload_code/photos/" + current_time + ".jpg"
         os.system("raspistill -o " + photo_path)
+        editor.changeImage(photo_path)
         if(greyscale == True):
             log.writeTo("Applying greyscale filter.")
+            editor.greyscale()
+            
         if(rotate_180 == True):
+            editor.flip_180()
             log.writeTo("Applying 180 degree rotation.")
         if(custom_filter == True):
+            photo_editor.custom_filter()
             log.writeTo("Applying custom filter.")
+        editor.timestamp()
+        editor.write()
         log.writeTo("Exiting C3. Photo available at: " + photo_path)
     elif(command == "D4"):
         log.writeTo("Entering D4: Changing to greyscale")
         greyscale = True
+        if(greyscale == True):
+            success = 1
+        else:
+            success = -1
         log.writeTo("Exiting D4")
     elif(command == "E5"):
         log.writeTo("Entering E5: Changing to color")

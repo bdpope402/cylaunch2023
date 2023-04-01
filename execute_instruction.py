@@ -1,65 +1,98 @@
 import sys
 import os
 import servoTurn
+from cyllogger import cyllogger
 from datetime import datetime
+
+NASA_CALLSIGN = "PLACEHOLDER, CHANGE ME"
 
 global servo1_angle
 global servo2_angle
 servo1_angle = 0
 servo2_angle = 0
 
+global greyscale
+global rotate_180
+global custom_filter
+
+greyscale = False
+rotate_180 = False
+custom_filter = False
+
+
 def main():
+    log = cyllogger("ex_instruction_log")
     num_args = len(sys.argv)
+    if(verifyCallSign(sys.argv[0]) == False):
+        log.writeTo("WARNING: " + sys.argv[0] + "DOES NOT MATCH EXPECTED CALL SIGN OF " + NASA_CALLSIGN)
+        print("WARNING: " + sys.argv[0] + "DOES NOT MATCH EXPECTED CALL SIGN OF " + NASA_CALLSIGN)
     i = 1 #start at 1, the first argument is the command
     init()
-    logfile = open("logs/landinglog" + str(datetime.now()) + ".txt", "w")
+    # logfile = open("logs/landinglog" + str(datetime.now()) + ".txt", "w")
     while(i < num_args):
         command = str(sys.argv[i]).upper()
-        ex_command(logfile, command)
-        #log(logfile, command)
-        i = i + 1
-    logfile.close()
+        ex_command(log, command)
+        #log.writeTo(command)
+        i += 1
 
 def init():
-    servoTurn.moveServo(2,servo2_angle)
-    
-def log(logfile, text):
-    logfile.write( text + "\n")
+    servoTurn.moveServo(servo2_angle)
+    greyscale = False
 
-def ex_command(logfile, command):
+def verifyCallSign(callsign):
+    return (NASA_CALLSIGN ==  callsign)
+    
+
+def ex_command(log, command):
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
     global servo2_angle
     success = -1
     if(command == "A1"):
-        log(logfile, "Entering A1: Turning Camera 60")
+        log.writeTo("Entering A1: Turning Camera 60")
         servo2_angle += 60
-        success = servoTurn.moveServo(2,servo2_angle)
-        log(logfile, "Exiting A1")
+        success = servoTurn.moveServo(2)
+        log.writeTo("Exiting A1")
     elif(command == "B2"):
-        log(logfile,"Entering B2: Turning camera -60")
+        log.writeTo("Entering B2: Turning camera -60")
         servo2_angle -= 60
-        success = servoTurn.moveServo(2, servo2_angle)
-        log(logfile,"Exiting B2")
+        success = servoTurn.moveServo(2)
+        log.writeTo("Exiting B2")
     elif(command == "C3"):
-        log(logfile,"Enginering C3: Taking Picture")
-        log(logfile,"Exiting C3")
+        log.writeTo("Entering C3: Taking Picture")
+        photo_path = "/home/cylaunch/payload_code/photos/" + current_time + ".jpg"
+        os.system("raspistill -o " + photo_path)
+        if(greyscale == True):
+            log.writeTo("Applying greyscale filter.")
+        if(rotate_180 == True):
+            log.writeTo("Applying 180 degree rotation.")
+        if(custom_filter == True):
+            log.writeTo("Applying custom filter.")
+        log.writeTo("Exiting C3. Photo available at: " + photo_path)
     elif(command == "D4"):
-        log(logfile, "Entering D4: Changing to greyscale")
-        log(logfile, "Exiting D4")
+        log.writeTo("Entering D4: Changing to greyscale")
+        greyscale = True
+        log.writeTo("Exiting D4")
     elif(command == "E5"):
-        log(logfile, "Entering E5: Changing to color")
-        log(logfile, "Exiting E5")
+        log.writeTo("Entering E5: Changing to color")
+        greyscale = False
+        log.writeTo("Exiting E5")
     elif(command == "F6"):
-        log(logfile, "Entering F6: Rotate images 180 deg")
-        log(logfile, "Exiting F6")
+        log.writeTo("Entering F6: Rotate images 180 deg")
+        rotate_180 = True
+        log.writeTo("Exiting F6")
     elif(command == "G7"):
-        log(logfile, "Entering G7: Clearing all filters")
-        log(logfile, "exiting G7")
+        log.writeTo("Entering G7: Clearing all filters")
+        greyscale = False
+        rotate_180 = False
+        custom_filter = False
+        log.writeTo("exiting G7")
     else:
         print("")
     if(success < 0):
-        log(logfile, "Returned error while executing " + command)
+        log.writeTo("Returned error while executing " + command)
     else:
-        log(logfile, str("successfully executed " + command))
+        log.writeTo(str("successfully executed " + command))
 
 if __name__ == "__main__":
     main()

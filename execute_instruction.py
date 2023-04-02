@@ -92,16 +92,28 @@ def ex_command(log, command):
     elif(command == "E5"):
         log.writeTo("Entering E5: Changing to color")
         greyscale = False
+        if(greyscale == False):
+            success = 1
+        else:
+            success = -1
         log.writeTo("Exiting E5")
     elif(command == "F6"):
         log.writeTo("Entering F6: Rotate images 180 deg")
         rotate_180 = True
+        if(rotate_180 == True):
+            success = 1
+        else:
+            success = -1
         log.writeTo("Exiting F6")
     elif(command == "G7"):
         log.writeTo("Entering G7: Clearing all filters")
         greyscale = False
         rotate_180 = False
         custom_filter = False
+        if(greyscale == False and rotate_180 == False and custom_filter == False):
+            success = 1
+        else:
+            success = -1
         log.writeTo("exiting G7")
     else:
         print("")

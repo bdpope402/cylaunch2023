@@ -2,11 +2,15 @@ import board, adafruit_bno055
 from math import *
 from time import sleep
 import move
+import interrupt
+from cyllogger import cyllogger
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 sensor = adafruit_bno055.BNO055_I2C(i2c)
+FUDGE_FACTOR = -1 + 90
+error = -1
 
-error = 9999
+log = cyllogger("UpAngleLog")
 
 
 def AngleToUp():
@@ -17,31 +21,40 @@ def AngleToUp():
         aMag = sqrt(ax**2 + ay**2 + az**2)
         if aMag >= 100:
             log.writeTo(f"ERROR, Acceleration Magnitude from UpAngle: {aMag}")
+            print("aMag Error")
             return error
         roll = degrees(atan2(ay, az))
 
-        if roll < 0:
-            roll += 360
-
         averageroll += roll
 
-        sleep(0.05)
+    averageroll = averageroll / 3
+    averageroll += FUDGE_FACTOR  # Fudge factor due to hot glue
+    if averageroll < 0:
+        averageroll += 360
 
-    return averageroll / 3
+        # sleep(0.01)
+    return averageroll
 
 
+"""
+while True:
+    print(f"Angle to up: {AngleToUp()}")
+"""
+
+"""
 while True:
     rAng = AngleToUp()
     print(f"Roll: {rAng}")
-    turn = round((rAng / 3.8), 0)
-    print(f"Turn: {turn}")
-    if turn > 0:
-        move.move.spinF(1)
-    elif turn < 0:
-        move.move.spinB(1)
-    else:
-        print("Nah")
-    sleep(0.1)
+    turn = int(rAng / 3.8)
+    print(f"Turn Steps: {turn}")
+    # if rAng > 180:
+    #     move.move.spinB(5)
+    # elif rAng <= 180:
+    #     move.move.spinF(5)
+    # else:
+    #     print("Nah")
+    # sleep(0.05)
+"""
 
 """
 while True:

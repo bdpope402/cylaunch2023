@@ -21,7 +21,7 @@ if __name__ == '__main__':
     GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     
     GPIO.add_event_detect(BUTTON_GPIO, GPIO.BOTH, 
-            callback=button_callback, bouncetime=50)
+            callback=button_callback, bouncetime=100)
     
     signal.signal(signal.SIGINT, signal_handler)
     signal.pause()

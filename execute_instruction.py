@@ -76,10 +76,11 @@ def ex_command(log, command):
             editor.flip_180()
             log.writeTo("Applying 180 degree rotation.")
         if(custom_filter == True):
-            photo_editor.custom_filter()
+            editor.custom_filter()
             log.writeTo("Applying custom filter.")
         editor.timestamp()
         editor.write()
+        success = 1
         log.writeTo("Exiting C3. Photo available at: " + photo_path)
     elif(command == "D4"):
         log.writeTo("Entering D4: Changing to greyscale")
@@ -106,7 +107,15 @@ def ex_command(log, command):
             success = -1
         log.writeTo("Exiting F6")
     elif(command == "G7"):
-        log.writeTo("Entering G7: Clearing all filters")
+        log.writeTo("Entering G7: APPLYING custom filter")
+        custom_filter = True
+        if(custom_filter == True):
+            success = 1
+        else:
+            success = -1
+        log.writeTo("exiting G7")
+    elif(command == "H8"):
+        log.writeTo("Entering H8: Clearing all filters")
         greyscale = False
         rotate_180 = False
         custom_filter = False
@@ -114,7 +123,7 @@ def ex_command(log, command):
             success = 1
         else:
             success = -1
-        log.writeTo("exiting G7")
+        log.writeTo("exiting H8")
     else:
         print("")
     if(success < 0):

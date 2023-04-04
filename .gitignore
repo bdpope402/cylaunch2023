@@ -5,3 +5,4 @@ flags/*
 photos
 radio_output
 DO_NOT_DELETE
+*.txt

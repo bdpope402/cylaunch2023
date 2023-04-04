@@ -1,22 +1,25 @@
 from move import move
 import time
 
+# Stepper 1 is body rotation motor, 1.8° per step, 3.6° per doublestep
+# Stepper 2 is linear actuator, .0018 mm per step, .0038 mm per doublestep
 
 def main():
+    move_local = move()
     while True == True:
         userInput = input("What motor do you want? (S for stepper L for lin act) ")
         userDir = input("F or B? ")
         userSteps = int(input("How many steps: "))
         if userInput == "S":
             if userDir == "F":
-                move.spinF(userSteps)
+                move_local.spinF(userSteps)
             elif userDir == "B":
-                move.spinB(userSteps)
+                move_local.spinB(userSteps)
         elif userInput == "L":
             if userDir == "F":
-                move.extendF(userSteps)
+                move_local.extendF(userSteps)
             elif userDir == "B":
-                move.extendB(userSteps)
+                move_local.extendB(userSteps)
         time.sleep(2)
 
 

@@ -9,7 +9,7 @@ def angle2DutyCycle(angle):
     print(f"Duty Cycle = {dutyCycle}")
     return dutyCycle
 
-servo1PIN = 21
+servo1PIN = 19
 servo2PIN = 16
 frequency = 50
 GPIO.setmode(GPIO.BCM)

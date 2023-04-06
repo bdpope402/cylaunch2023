@@ -7,9 +7,13 @@ import time
 def main():
     move_local = move()
     while True == True:
-        userInput = input("What motor do you want? (S for stepper L for lin act) ")
+        userInput = input("What motor do you want? (S for stepper L for lin act, E to exit) ")
+        if(userInput.upper() == "E"):
+            move_local.releaseStepper()
+            move_local.releaseLin()
+            break
         userDir = input("F or B? ")
-        userSteps = int(input("How many steps: "))
+        userSteps = int(input("How many steps (angle for stepper motor): "))
         if userInput == "S":
             if userDir == "F":
                 move_local.spinF(userSteps)

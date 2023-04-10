@@ -1,17 +1,18 @@
 import sys
 import os
-import servoTurn
+from servoTurn import servoTurn
 from cyllogger import cyllogger
 from datetime import datetime
 from photo_editor import photo_editor
 
-NASA_CALLSIGN = "PLACEHOLDER, CHANGE ME"
+NASA_CALLSIGN = "KQ4CTL-4"
 
 global servo1_angle
 global servo2_angle
 servo1_angle = 0
-servo2_angle = 0
-
+servo2_angle = 140
+global moveServo
+moveServo = servoTurn()
 
 
 
@@ -20,16 +21,17 @@ def main():
     global greyscale
     global rotate_180
     global custom_filter
+    global moveServo
     greyscale = False
     rotate_180 = False
     custom_filter = False
     log = cyllogger("ex_instruction_log")
+    moveServo.moveServo(servo2_angle)
     num_args = len(sys.argv)
     if(verifyCallSign(sys.argv[0]) == False):
         log.writeTo("WARNING: " + sys.argv[0] + "DOES NOT MATCH EXPECTED CALL SIGN OF " + NASA_CALLSIGN)
         print("WARNING: " + sys.argv[0] + "DOES NOT MATCH EXPECTED CALL SIGN OF " + NASA_CALLSIGN)
     i = 1 #start at 1, the first argument is the command
-    init()
     # logfile = open("logs/landinglog" + str(datetime.now()) + ".txt", "w")
     while(i < num_args):
         command = str(sys.argv[i]).upper()
@@ -37,14 +39,12 @@ def main():
         #log.writeTo(command)
         i += 1
 
-def init():
-    servoTurn.moveServo(servo2_angle)
-
 def verifyCallSign(callsign):
     return (NASA_CALLSIGN ==  callsign)
     
 
 def ex_command(log, command):
+    global moveServo
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     editor = photo_editor("/home/cylaunch/payload_code/DO_NOT_DELETE/daniel.jpg")
@@ -54,14 +54,30 @@ def ex_command(log, command):
     global servo2_angle
     success = -1
     if(command == "A1"):
-        log.writeTo("Entering A1: Turning Camera 60")
-        servo2_angle += 60
-        success = servoTurn.moveServo(2)
+        log.writeTo("Entering A1: Turning Camera 60 RIght")
+        if(servo2_angle + 60 < 0):
+            log.writeTo("Negative! Going to 260")
+            servo2_angle = 260
+        elif(servo2_angle + 60 > 220):
+            log.writeTo("Over 260! Going to 20")
+            servo2_angle = 20
+        else:
+            servo2_angle += 60
+        
+        success = moveServo.moveServo(servo2_angle)
         log.writeTo("Exiting A1")
     elif(command == "B2"):
         log.writeTo("Entering B2: Turning camera -60")
+        if(servo2_angle - 60 < 0):
+            log.writeTo("Negative! Going to 260")
+            servo2_angle = 260
+        elif(servo2_angle - 60 > 220):
+            log.writeTo("Over 260! Going to 20")
+            servo2_angle = 20
+        else:
+            servo2_angle += 60
         servo2_angle -= 60
-        success = servoTurn.moveServo(2)
+        success = moveServo.moveServo(servo2_angle)
         log.writeTo("Exiting B2")
     elif(command == "C3"):
         log.writeTo("Entering C3: Taking Picture")

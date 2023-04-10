@@ -3,6 +3,7 @@ from datetime import datetime
 
 SKIP_SLEEP_PATH = "/home/cylaunch/payload_code/flags/skipSleep.cyl"
 SM_ON_RESTART= "/home/cylaunch/payload_code/flags/SMRestart.cyl"
+RADIO_OUTPUT_PATH = "/home/cylaunch/payload_code/radio_output/empty.txt"
 
 now = datetime.now()
 

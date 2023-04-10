@@ -1,5 +1,6 @@
 from adafruit_motorkit import MotorKit
 from adafruit_motor import stepper
+import time
 
 # Stepper 1 is body rotation motor, 1.8° per step, 3.6° per doublestep
 # Stepper 2 is linear actuator, .0018 mm per step, .0038 mm per doublestep
@@ -35,17 +36,21 @@ class move:
 
     def extendF(self, steps):
         i = 0
+        
+        timeout = time.time() + 60*10   # 5 minutes from now
         while i < steps:
             self.kit.stepper2.onestep(direction=stepper.FORWARD, style=stepper.DOUBLE)
             i += 1
-        # kit.stepper2.release()
+            if(time.time() > timeout):
+                break
+            self.kit.stepper2.release()
 
     def extendB(self, steps):
         i = 0
         while i < steps:
             self.kit.stepper2.onestep(direction=stepper.BACKWARD, style=stepper.DOUBLE)
             i += 1
-        #kit.stepper2.release()
+        self.kit.stepper2.release()
 
     def convertAngle(angle):
         return angle / 3.6

@@ -58,7 +58,7 @@ def ex_command(log, command):
         if(servo2_angle + 60 < 0):
             log.writeTo("Negative! Going to 260")
             servo2_angle = 260
-        elif(servo2_angle + 60 > 220):
+        elif(servo2_angle + 60 > 260):
             log.writeTo("Over 260! Going to 20")
             servo2_angle = 20
         else:
@@ -71,12 +71,11 @@ def ex_command(log, command):
         if(servo2_angle - 60 < 0):
             log.writeTo("Negative! Going to 260")
             servo2_angle = 260
-        elif(servo2_angle - 60 > 220):
+        elif(servo2_angle - 60 > 260):
             log.writeTo("Over 260! Going to 20")
             servo2_angle = 20
         else:
-            servo2_angle += 60
-        servo2_angle -= 60
+            servo2_angle -= 60
         success = moveServo.moveServo(servo2_angle)
         log.writeTo("Exiting B2")
     elif(command == "C3"):

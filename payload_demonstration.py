@@ -21,7 +21,7 @@ zero = False
 global move_local
 local_move = move()
 
-OUT_STEPS = 15000
+OUT_STEPS = 13000
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
             local_move.spinF(1)
         
         local_move.spinF(8) # fudge factor
-        input("Found Zero, proceed?")
+        print("Found Zero, proceed?")
         time.sleep(2)
         # while(not zero):
         #     local_move.spinF(5)
@@ -49,7 +49,7 @@ def main():
 
         #Find the upward angle
         zero_angle = UpAngle.AngleToUp()
-        input("Found Up, proceed?")
+        print("Found Up, proceed?")
         print(f"zero_angle is: {zero_angle}")
 
         move_angle = 0
@@ -57,18 +57,18 @@ def main():
             print("Do nothing")
         elif zero_angle <= 135:
             print("zero_angle <= 135")
-            move_angle = 90
+            move_angle = 360 - 90
         elif zero_angle <= 225:
             print("zero_angle <= 225")
             move_angle = 180
         elif zero_angle <= 315:
             print("zero_angle <= 315")
-            move_angle = 270
+            move_angle = 360 - 270
         print("Move angle: " + str(move_angle))
-        input("Found Move, proceed?")
+        print("Found Move, proceed?")
 
-        local_move.spinF(move_angle*2)  # move
-        input("At door, proceed?")
+        local_move.spinB(move_angle*2)  # move backwards. Trying to keep in the 360
+        print("At door, proceed?")
         test_angle = UpAngle.AngleToUp()
         if test_angle >= 315 or test_angle <= 45:
             print("Upright door found")

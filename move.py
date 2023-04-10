@@ -37,18 +37,22 @@ class move:
     def extendF(self, steps):
         i = 0
         
-        timeout = time.time() + 60*10   # 5 minutes from now
+        timeout = time.time() + 60*20   # 20 minutes from now
         while i < steps:
             self.kit.stepper2.onestep(direction=stepper.FORWARD, style=stepper.DOUBLE)
             i += 1
-            if(time.time() > timeout):
-                break
+            if(i % 50 == 0):
+                print("Remaining Steps: " + str(steps - i))
+                if(time.time() > timeout):
+                    break
             self.kit.stepper2.release()
 
     def extendB(self, steps):
         i = 0
         while i < steps:
             self.kit.stepper2.onestep(direction=stepper.BACKWARD, style=stepper.DOUBLE)
+            if(i % 50 == 0):
+                print("Remaining Steps: " + str(steps - i))
             i += 1
         self.kit.stepper2.release()
 

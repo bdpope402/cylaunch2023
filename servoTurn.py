@@ -3,7 +3,7 @@ from time import sleep
 class servoTurn:
     def __init__(self):       
         GPIO.setwarnings(False)   
-        servo1PIN = 20
+        servo1PIN = 19
         frequency = 50
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(servo1PIN, GPIO.OUT)

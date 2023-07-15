@@ -1,5 +1,5 @@
 import os
-import servoTurn
+import misc_tests.servoTurn as servoTurn
 def main():
     print("Camera Detection Test:")
     print("-----------------------------\nOutput:")

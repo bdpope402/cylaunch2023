@@ -1,5 +1,9 @@
+#----------------------------------------------------
+# CyLogger object, simplifies timestamping and 
+# writing to logs within objects
+#----------------------------------------------------
+
 from datetime import datetime
-from datetime import time
 
 class cyllogger:
     def __init__(self, name):

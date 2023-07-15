@@ -1,3 +1,7 @@
+#----------------------------------------------------
+# This was demo code to show payload functionality
+#----------------------------------------------------
+
 from cyllogger import cyllogger
 import os
 import RPi.GPIO as GPIO

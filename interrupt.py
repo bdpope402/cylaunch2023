@@ -1,3 +1,6 @@
+#----------------------------------------------------
+# Interrupts to help with payload positioning
+#----------------------------------------------------
 import signal                   
 import sys
 import RPi.GPIO as GPIO

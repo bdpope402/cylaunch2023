@@ -1,6 +1,10 @@
+#----------------------------------------------------
+# Photo editor object utilizing OpenCV to fulfill 
+# the requirements in 4.2.2
+#----------------------------------------------------
 import cv2
 from datetime import datetime
-import numpy as np
+
 class photo_editor:
     def __init__(self, path):
         self.image = cv2.imread(path)

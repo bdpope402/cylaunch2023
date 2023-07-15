@@ -1,20 +1,22 @@
+#----------------------------------------------------
+# This is the implementation of the launch state 
+# machine. This will run continually once launched.
+#----------------------------------------------------
 import rocketcheck
-import execute_instruction
 import time
 import os
 from cyllogger import cyllogger 
-import hat_test
 import signal
 from RadioDecoder import RadioDecoder
 from subprocess import check_output
 from move import move
 
 
-#Set integers to do things
+#Set constants
 WAIT_TIME = 1800 #30 minute sleep time
 IN_FLIGHT_TIME = 180 # 3 minute flight
 
-#Folders to cut down on long strings
+# Folders to cut down on long strings
 FLAGS_FOLDER = "/home/cylaunch/payload_code/flags/"
 STATE_FLAGS_DIR = FLAGS_FOLDER + "launchFlags/"
 
@@ -23,7 +25,8 @@ SKIP_SLEEP_PATH = FLAGS_FOLDER + "skipSleep.cyl"
 SKIP_SM_PATH = FLAGS_FOLDER + "SkipSM.cyl"
 RADIO_OUTPUT_PATH = "/home/cylaunch/payload_code/radio_output/empty.txt"
 
-#Flags to allow the raspberry pi to stay on between states. Will look for the State_S and State _F flags
+# non-volitile Flags to allow the raspberry pi to track states in case of a poweroff.
+# Thesse flags will be written upon state exit
 SETUP_F = STATE_FLAGS_DIR + "setupF.cyl"
 AWAITING_LAUNCH_F = STATE_FLAGS_DIR + "awaitingLaunchF.cyl"
 IN_FLIGHT_F = STATE_FLAGS_DIR + "inFlightF.cyl"
@@ -33,12 +36,12 @@ IN_POSITION_F = STATE_FLAGS_DIR + "inPos.cyl"
 EXECUTE_INSTRUCTION_F = STATE_FLAGS_DIR + "executeInstructionF.cyl"
 SM_COMPLETION_F = STATE_FLAGS_DIR + "smComplete.cyl"
 
-#DEBUGGING STATEMENTS. Uncomment up to the state you want to run
-os.system("touch " + SETUP_F)
-os.system("touch " + AWAITING_LAUNCH_F)
-os.system("touch " + IN_FLIGHT_F)
-os.system("touch " + CONFIRM_LANDING_F)
-os.system("touch " + AWAIT_MESSAGE_F)
+# DEBUGGING STATEMENTS. Uncomment up to the state you want to run
+# os.system("touch " + SETUP_F)
+# os.system("touch " + AWAITING_LAUNCH_F)
+# os.system("touch " + IN_FLIGHT_F)
+# os.system("touch " + CONFIRM_LANDING_F)
+# os.system("touch " + AWAIT_MESSAGE_F)
 # os.system("touch " + EXECUTE_INSTRUCTION_F)
 # os.system("touch " + SM_COMPLETION_F)
 
@@ -50,6 +53,8 @@ NASA_CALLSIGN = "KQ4CTL-4"
 
 log = cyllogger("sm_log")
 local_move = move()
+
+# Calls the state functions and resumes in case of lost power
 def main():
     if(os.path.exists(SETUP_F) == False):
         setup_state()
@@ -68,10 +73,7 @@ def main():
         # Graceful shutdown
         os.system("sudo poweroff")
 
-
-    #find upright door, launch fm_rtl and multimon
-
-
+# sleeps for 30 if SKIP_SLEEP_PATH is asserted
 def setup_state():
     log.writeTo("Entered " + __name__)
     if(os.path.exists(SKIP_SLEEP_PATH) == False):
@@ -87,7 +89,7 @@ def awaiting_launch_state():
     log.writeTo("Entered " + __name__)
     while(rocketcheck.checkIfLaunching() == False):
         time.sleep(0.5)
-    #Lock Payload
+    #Lock Payload in place
     move.spinF(0.1)
     create_file(AWAITING_LAUNCH_F)
     log.writeTo("Exited " + __name__)
@@ -112,14 +114,17 @@ def await_message_state():
     log.writeTo("Entered " + __name__)
     
     while(valid_message == False):
-        #Start Radio
+        # Start Radio bash script
         os.system("/home/cylaunch/payload_code/radio.sh")
-        #Waiting for file to be written to
+
+        # Busy waiting for multimon results
         while(os.path.getsize(RADIO_OUTPUT_PATH) == 0):
             time.sleep(1)
         log.writeTo("Exited ""File Exists"" loop")
-        #Create decoder once we have output
+
+        #Create decoder object once we have output
         decoder = RadioDecoder(RADIO_OUTPUT_PATH)
+        # Decode from base 64
         decoder.decode64()
         pids = get_pid("radio.sh")
         if(decoder.callsign == NASA_CALLSIGN):
@@ -149,10 +154,8 @@ def execute_instruction_state():
 
 def completed_cleanup_state():
     log.writeTo("Entered " + __name__)
-    log.writeTo("Hard stopping stepper motors")
+    log.writeTo("releasing stepper motors")
     os.system("python3 /home/cylaunch/payload_code/stopstep.py")
-
-
 
 def create_file(path):
     os.system("touch " + path)

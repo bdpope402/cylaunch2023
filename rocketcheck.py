@@ -1,3 +1,7 @@
+#----------------------------------------------------
+# Helper functions to determine launch / landed
+# status based on the magnitude of acceleration
+#----------------------------------------------------
 import board, adafruit_bno055
 import RPi.GPIO as GPIO
 from time import sleep

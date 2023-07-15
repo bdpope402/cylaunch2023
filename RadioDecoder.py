@@ -1,3 +1,6 @@
+#----------------------------------------------------
+# Class to decode and store the instruction string
+#----------------------------------------------------
 # Importing the library needed for decoding the radio data from base 64
 import base64
 

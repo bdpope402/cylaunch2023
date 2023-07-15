@@ -1,8 +1,10 @@
-from move import move
-import time
-
+#----------------------------------------------------
+# Manual loop for extending / retracting stepper motors
 # Stepper 1 is body rotation motor, 1.8° per step, 3.6° per doublestep
 # Stepper 2 is linear actuator, .0018 mm per step, .0038 mm per doublestep
+#----------------------------------------------------
+from move import move
+import time
 
 def main():
     move_local = move()

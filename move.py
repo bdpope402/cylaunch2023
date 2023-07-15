@@ -1,22 +1,25 @@
+#----------------------------------------------------
+# Creates a move object to control the linear
+# actuator and the stepper motor 
+# Stepper 1 is body rotation motor, 1.8° per step, 3.6° per doublestep
+# Stepper 2 is linear actuator, .0018 mm per step, .0038 mm per doublestep
+#----------------------------------------------------
 from adafruit_motorkit import MotorKit
 from adafruit_motor import stepper
 import time
-
-# Stepper 1 is body rotation motor, 1.8° per step, 3.6° per doublestep
-# Stepper 2 is linear actuator, .0018 mm per step, .0038 mm per doublestep
-
 
 class move:
 
     def __init__(self):
         self.kit = MotorKit()
+        
     def spinF(self, angle):
         steps = move.convertAngle(angle)
         i = 0
         while i < steps:
             self.kit.stepper1.onestep(direction=stepper.FORWARD, style=stepper.DOUBLE)
             i += 1
-        # self.kit.stepper1.release()
+        self.kit.stepper1.release()
     
     def spinF_norelease(self, angle):
         steps = move.convertAngle(angle)
@@ -24,7 +27,6 @@ class move:
         while i < steps:
             self.kit.stepper1.onestep(direction=stepper.FORWARD, style=stepper.DOUBLE)
             i += 1
-        #kit.stepper1.release()
 
     def spinB(self, angle):
         steps = move.convertAngle(angle)
@@ -32,11 +34,10 @@ class move:
         while i < steps:
             self.kit.stepper1.onestep(direction=stepper.BACKWARD, style=stepper.DOUBLE)
             i += 1
-        # kit.stepper1.release()
+        self.kit.stepper1.release()
 
     def extendF(self, steps):
         i = 0
-        
         timeout = time.time() + 60*20   # 20 minutes from now
         while i < steps:
             self.kit.stepper2.onestep(direction=stepper.FORWARD, style=stepper.DOUBLE)
@@ -64,6 +65,3 @@ class move:
 
     def releaseStepper(self):
         self.kit.stepper1.release()
-
-
-# move.spinF(200)

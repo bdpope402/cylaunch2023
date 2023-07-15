@@ -20,11 +20,7 @@ class servoTurn:
             self.pwm1.ChangeDutyCycle(angle2DutyCycle(degrees))
             sleep(2)
             return 0
-            # else:
-            #     pwm1.stop()
-            #     pwm2.stop()
-            #     GPIO.cleanup()
-            #     return -1
+
 def angle2DutyCycle(angle):
     dutyCycle = (angle / 27) + 2.5
     print(f"Angle = {angle}")

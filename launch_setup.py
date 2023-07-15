@@ -1,3 +1,7 @@
+#----------------------------------------------------
+# This script is run manually to get the payload
+# code in the correct state prior to launch.
+#----------------------------------------------------
 import os
 from datetime import datetime
 
